@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ['@bubblechat/ui', '@bubblechat/database', '@bubblechat/document-processing'],
+  transpilePackages: ['@bubblechat/ui', '@bubblechat/database', '@bubblechat/document-processing', 'firebase', 'undici'],
   images: {
     domains: ['localhost'],
   },
