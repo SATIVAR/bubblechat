@@ -1,0 +1,181 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      Role     @default(CLIENT)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relacionamentos
+  clients   Client[]
+  agents    Agent[]
+
+  @@map("users")
+}
+
+model Client {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  company      String?
+  phone        String?
+  whatsapp     String?
+  website      String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relacionamentos
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  agents    Agent[]
+  documents Document[]
+  budgets   Budget[]
+
+  @@map("clients")
+}
+
+model Agent {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  model       String   @default("gpt-4")
+  isActive    Boolean  @default(true)
+  config      Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relacionamentos
+  clientId String
+  client   Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("agents")
+}
+
+model Document {
+  id             String           @id @default(cuid())
+  fileName       String
+  originalName   String
+  mimeType       String
+  size           Int
+  status         DocumentStatus   @default(PROCESSING)
+  extractedText  String?
+  confidence     Float?
+  processingTime Int?
+  metadata       Json?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  // Relacionamentos
+  clientId String
+  client   Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  budgets  Budget[]
+
+  @@map("documents")
+}
+
+model Budget {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  value       Float
+  status      BudgetStatus @default(DRAFT)
+  metadata    Json?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // Relacionamentos
+  clientId   String
+  client     Client       @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  documentId String?
+  document   Document?    @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  items      BudgetItem[]
+
+  @@map("budgets")
+}
+
+model BudgetItem {
+  id          String @id @default(cuid())
+  description String
+  quantity    Float  @default(1)
+  unitPrice   Float
+  totalPrice  Float
+
+  // Relacionamentos
+  budgetId String
+  budget   Budget @relation(fields: [budgetId], references: [id], onDelete: Cascade)
+
+  @@map("budget_items")
+}
+
+model ProcessingLog {
+  id            String   @id @default(cuid())
+  fileName      String
+  fileType      String
+  status        String
+  processingTime Int?
+  confidence    Float?
+  errorMessage  String?
+  createdAt     DateTime @default(now())
+
+  @@map("processing_logs")
+}
+
+model SystemSettings {
+  id                   String   @id @default(cuid())
+  platformName         String   @default("Bubblechat Platform")
+  supportEmail         String   @default("suporte@bubblechat.com")
+  maxFileSize          Int      @default(50)
+  defaultOcrLanguage   String   @default("por")
+  autoCleanup          Boolean  @default(true)
+  auditLogs            Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@map("system_settings")
+}
+
+model LLMProvider {
+  id        String   @id @default(cuid())
+  name      String
+  apiKey    String
+  baseUrl   String?
+  models    Json?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("llm_providers")
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+  AGENT
+}
+
+enum DocumentStatus {
+  PROCESSING
+  COMPLETED
+  ERROR
+}
+
+enum BudgetStatus {
+  DRAFT
+  SENT
+  APPROVED
+  REJECTED
+}

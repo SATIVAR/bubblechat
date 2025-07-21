@@ -1,0 +1,37 @@
+{
+  "name": "@bubblechat/document-processing",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "tesseract.js": "^5.0.4",
+    "pdf-parse": "^1.1.1",
+    "xlsx": "^0.18.5",
+    "natural": "^6.12.0",
+    "string-similarity": "^4.0.4",
+    "mime-types": "^2.1.35",
+    "sharp": "^0.33.0",
+    "multer": "^1.4.5-lts.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "@types/mime-types": "^2.1.4",
+    "@types/multer": "^1.4.11",
+    "@types/natural": "^5.1.5",
+    "@types/pdf-parse": "^1.1.4",
+    "typescript": "^5.2.2",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.8",
+    "ts-jest": "^29.1.1",
+    "eslint": "^8.51.0",
+    "@typescript-eslint/eslint-plugin": "^6.9.0",
+    "@typescript-eslint/parser": "^6.9.0"
+  }
+}

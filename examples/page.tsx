@@ -1,0 +1,387 @@
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Check, Clock, Send, User, Ship } from "lucide-react"
+
+interface RequiredField {
+  id: string
+  label: string
+  status: "pending" | "checked"
+  description?: string
+  category: string
+}
+
+interface Message {
+  id: string
+  role: "user" | "assistant"
+  content: string
+  timestamp: Date
+}
+
+export default function LogisticsQuoteInterface() {
+  const [input, setInput] = useState("")
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "1",
+      role: "assistant",
+      content:
+        "Welcome to GlobalShip Logistics! I'm here to help you get an instant quote for your international shipment. Let's start with the basics - are you looking to import or export goods?",
+      timestamp: new Date(Date.now() - 300000),
+    },
+    {
+      id: "2",
+      role: "user",
+      content: "Hi! I need to export goods from the US to Germany.",
+      timestamp: new Date(Date.now() - 240000),
+    },
+    {
+      id: "3",
+      role: "assistant",
+      content:
+        "Perfect! An export from US to Germany. What type of transport would you prefer - maritime (sea freight), air freight, or do you need a recommendation based on your cargo?",
+      timestamp: new Date(Date.now() - 180000),
+    },
+    {
+      id: "4",
+      role: "user",
+      content: "I think maritime would be more cost-effective for my shipment.",
+      timestamp: new Date(Date.now() - 120000),
+    },
+    {
+      id: "5",
+      role: "assistant",
+      content:
+        "Great choice! Maritime freight is indeed cost-effective for most shipments. Now, which US port would you like to ship from? Popular options include Los Angeles, Long Beach, New York, or Savannah.",
+      timestamp: new Date(Date.now() - 60000),
+    },
+  ])
+
+  const [requiredFields, setRequiredFields] = useState<RequiredField[]>([
+    {
+      id: "shipment_direction",
+      label: "Shipment Direction",
+      status: "checked",
+      description: "Import or Export",
+      category: "Basic Info",
+    },
+    {
+      id: "transport_type",
+      label: "Transport Type",
+      status: "checked",
+      description: "Maritime, Air, or Land transport",
+      category: "Basic Info",
+    },
+    {
+      id: "origin_country",
+      label: "Origin Country",
+      status: "pending",
+      description: "Country of departure",
+      category: "Routing",
+    },
+    {
+      id: "origin_port",
+      label: "Origin Port/Airport",
+      status: "pending",
+      description: "Departure port or airport",
+      category: "Routing",
+    },
+    {
+      id: "destination_country",
+      label: "Destination Country",
+      status: "checked",
+      description: "Country of arrival",
+      category: "Routing",
+    },
+    {
+      id: "destination_port",
+      label: "Destination Port/Airport",
+      status: "pending",
+      description: "Arrival port or airport",
+      category: "Routing",
+    },
+    {
+      id: "incoterm",
+      label: "Incoterm",
+      status: "pending",
+      description: "FOB, CIF, DAP, etc.",
+      category: "Terms",
+    },
+    {
+      id: "estimated_ship_date",
+      label: "Ship Date",
+      status: "pending",
+      description: "When do you want to ship?",
+      category: "Timeline",
+    },
+    {
+      id: "total_weight_kg",
+      label: "Total Weight",
+      status: "pending",
+      description: "Weight in kilograms",
+      category: "Cargo Details",
+    },
+    {
+      id: "volume_m3",
+      label: "Volume",
+      status: "pending",
+      description: "Volume in cubic meters",
+      category: "Cargo Details",
+    },
+    {
+      id: "goods_description",
+      label: "Goods Description",
+      status: "pending",
+      description: "What are you shipping?",
+      category: "Cargo Details",
+    },
+    {
+      id: "contact_name",
+      label: "Contact Name",
+      status: "pending",
+      description: "Your full name",
+      category: "Contact Info",
+    },
+    {
+      id: "contact_email",
+      label: "Email Address",
+      status: "pending",
+      description: "For quote delivery",
+      category: "Contact Info",
+    },
+  ])
+
+  const handleSend = () => {
+    if (!input.trim()) return
+
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      role: "user",
+      content: input,
+      timestamp: new Date(),
+    }
+
+    setMessages((prev) => [...prev, newMessage])
+    setInput("")
+
+    // Simulate AI response
+    setTimeout(() => {
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        role: "assistant",
+        content: "Thank you! Let me update your shipment details and continue with the next requirement...",
+        timestamp: new Date(),
+      }
+      setMessages((prev) => [...prev, aiResponse])
+    }, 1000)
+  }
+
+  const completedCount = requiredFields.filter((field) => field.status === "checked").length
+  const totalCount = requiredFields.length
+  const progressPercentage = (completedCount / totalCount) * 100
+
+  // Group fields by category
+  const fieldsByCategory = requiredFields.reduce(
+    (acc, field) => {
+      if (!acc[field.category]) {
+        acc[field.category] = []
+      }
+      acc[field.category].push(field)
+      return acc
+    },
+    {} as Record<string, RequiredField[]>,
+  )
+
+  const getTransportIcon = () => {
+    // This would be dynamic based on selected transport type
+    return <Ship className="w-4 h-4 text-white" />
+  }
+
+  return (
+    <div className="flex h-screen bg-black">
+      {/* Chat Interface - Left Side */}
+      <div className="flex-1 flex flex-col">
+        {/* Chat Header */}
+        <div className="bg-zinc-900/50 border-b border-zinc-800 p-4 backdrop-blur-sm">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-full flex items-center justify-center">
+              {getTransportIcon()}
+            </div>
+            <div>
+              <h1 className="text-lg font-semibold text-white">GlobalShip Logistics</h1>
+              <p className="text-sm text-zinc-400">AI Quote Assistant • Get instant shipping quotes</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Messages */}
+        <ScrollArea className="flex-1 p-6">
+          <div className="space-y-6 max-w-4xl mx-auto">
+            {messages.map((message) => (
+              <div key={message.id} className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}>
+                <div
+                  className={`flex items-start space-x-3 max-w-[85%] ${message.role === "user" ? "flex-row-reverse space-x-reverse" : ""}`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+                      message.role === "user" ? "bg-white text-black" : "bg-gradient-to-r from-blue-600 to-cyan-500"
+                    }`}
+                  >
+                    {message.role === "user" ? <User className="w-4 h-4" /> : <Ship className="w-4 h-4 text-white" />}
+                  </div>
+                  <div className="flex flex-col space-y-1">
+                    <div
+                      className={`rounded-2xl px-4 py-3 ${
+                        message.role === "user"
+                          ? "bg-white text-black ml-auto"
+                          : "bg-zinc-800 text-white border border-zinc-700"
+                      }`}
+                    >
+                      <p className="text-sm leading-relaxed">{message.content}</p>
+                    </div>
+                    <p
+                      className={`text-xs px-2 ${message.role === "user" ? "text-right text-zinc-500" : "text-zinc-500"}`}
+                    >
+                      {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+
+        {/* Input Area */}
+        <div className="bg-zinc-900/50 border-t border-zinc-800 p-4 backdrop-blur-sm">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex space-x-3">
+              <div className="flex-1 relative">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Describe your shipment requirements..."
+                  className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-400 pr-12 py-3 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  onKeyPress={(e) => e.key === "Enter" && handleSend()}
+                />
+                <Button
+                  onClick={handleSend}
+                  size="sm"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-black hover:bg-zinc-200 rounded-lg h-8 w-8 p-0"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Required Fields Sidebar - Right Side */}
+      <div className="w-96 bg-zinc-900 border-l border-zinc-800 flex flex-col">
+        {/* Sidebar Header */}
+        <div className="p-6 border-b border-zinc-800">
+          <h2 className="text-lg font-semibold text-white mb-3">Quote Requirements</h2>
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm text-zinc-400">
+              <span>Progress</span>
+              <span className="text-white font-medium">
+                {completedCount}/{totalCount}
+              </span>
+            </div>
+            <div className="w-full bg-zinc-800 rounded-full h-2">
+              <div
+                className="bg-gradient-to-r from-blue-600 to-cyan-500 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Fields List */}
+        <ScrollArea className="flex-1 p-4">
+          <div className="space-y-6">
+            {Object.entries(fieldsByCategory).map(([category, fields]) => (
+              <div key={category}>
+                <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">{category}</h3>
+                <div className="space-y-2">
+                  {fields.map((field) => (
+                    <Card
+                      key={field.id}
+                      className={`transition-all duration-200 border-0 ${
+                        field.status === "checked"
+                          ? "bg-gradient-to-r from-green-900/20 to-emerald-900/20 border border-green-800/30"
+                          : "bg-zinc-800/50 hover:bg-zinc-800"
+                      }`}
+                    >
+                      <CardContent className="p-3">
+                        <div className="flex items-start justify-between">
+                          <div className="flex-1">
+                            <div className="flex items-center space-x-3">
+                              <div
+                                className={`w-4 h-4 rounded-full flex items-center justify-center ${
+                                  field.status === "checked" ? "bg-green-500" : "bg-zinc-700 border border-zinc-600"
+                                }`}
+                              >
+                                {field.status === "checked" ? (
+                                  <Check className="w-2.5 h-2.5 text-white" />
+                                ) : (
+                                  <Clock className="w-2.5 h-2.5 text-zinc-400" />
+                                )}
+                              </div>
+                              <h4 className="font-medium text-sm text-white">{field.label}</h4>
+                            </div>
+                            {field.description && (
+                              <p className="text-xs text-zinc-400 mt-1 ml-7">{field.description}</p>
+                            )}
+                          </div>
+                          <Badge
+                            variant="secondary"
+                            className={`text-xs ml-2 ${
+                              field.status === "checked"
+                                ? "bg-green-900/30 text-green-400 border-green-800/30"
+                                : "bg-zinc-800 text-zinc-400 border-zinc-700"
+                            }`}
+                          >
+                            {field.status === "checked" ? "✓" : "○"}
+                          </Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </ScrollArea>
+
+        {/* Sidebar Footer */}
+        <div className="p-4 border-t border-zinc-800">
+          <Button
+            className={`w-full transition-all duration-200 ${
+              completedCount === totalCount
+                ? "bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white"
+                : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 border border-zinc-700"
+            }`}
+            disabled={completedCount < totalCount}
+          >
+            {completedCount === totalCount ? (
+              <div className="flex items-center space-x-2">
+                <Ship className="w-4 h-4" />
+                <span>Generate Quote</span>
+              </div>
+            ) : (
+              `${totalCount - completedCount} details needed`
+            )}
+          </Button>
+          {completedCount === totalCount && (
+            <p className="text-xs text-zinc-400 text-center mt-2">Quote will be delivered to your email instantly</p>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}

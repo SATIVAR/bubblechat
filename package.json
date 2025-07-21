@@ -1,0 +1,53 @@
+{
+  "name": "bubblechat-platform",
+  "version": "1.0.0",
+  "description": "Plataforma Bubblle Agent CRM - Multi-tenant LLM Chat Platform",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "setup": "node setup.js",
+    "dev": "turbo run dev",
+    "dev:all": "concurrently \"npm run dev:api\" \"npm run dev:admin\" \"npm run dev:widget\" --names \"API,ADMIN,WIDGET\" --prefix-colors \"blue,green,yellow\"",
+    "dev:api": "cd apps/api && npm run dev",
+    "dev:admin": "cd apps/admin-dashboard && npm run dev",
+    "dev:widget": "cd apps/widget-fab && npm run dev",
+    "build": "turbo run build",
+    "start": "turbo run start",
+    "start:all": "concurrently \"npm run start:api\" \"npm run start:admin\" \"npm run start:widget\" --names \"API,ADMIN,WIDGET\" --prefix-colors \"blue,green,yellow\"",
+    "start:api": "cd apps/api && npm run start",
+    "start:admin": "cd apps/admin-dashboard && npm run start",
+    "start:widget": "cd apps/widget-fab && npm run start",
+    "lint": "turbo run lint",
+    "type-check": "turbo run type-check",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "db:migrate": "cd packages/database && npx prisma migrate dev",
+    "db:generate": "cd packages/database && npx prisma generate",
+    "db:studio": "cd packages/database && npx prisma studio",
+    "db:reset": "cd packages/database && npx prisma migrate reset",
+    "docker": "node docker-scripts.js",
+    "docker:status": "node docker-scripts.js status",
+    "docker:logs": "node docker-scripts.js logs",
+    "docker:restart": "node docker-scripts.js restart",
+    "docker:clean": "node docker-scripts.js clean",
+    "docker:rebuild": "node docker-scripts.js rebuild",
+    "test:connections": "node test-connections.js",
+    "test:db": "node test-connections.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.0",
+    "concurrently": "^8.2.2",
+    "pg": "^8.16.3",
+    "redis": "^5.6.0",
+    "turbo": "^1.10.16",
+    "typescript": "^5.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}
