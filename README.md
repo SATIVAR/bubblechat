@@ -1,214 +1,104 @@
 # Bubblechat Platform 🚀
 
-Plataforma multi-tenant para gerenciamento de clientes e agentes IA com processamento automático de documentos e geração de orçamentos.
+Plataforma multi-tenant para gerenciamento de clientes e agentes de IA, com processamento automático de documentos e geração de orçamentos, construída sobre uma arquitetura moderna com Firebase e Next.js.
 
-## ✨ Funcionalidades
+## ✨ Funcionalidades Principais
 
-- 🏢 **Multi-tenant**: Suporte a múltiplos clientes isolados
-- 🤖 **Agentes IA**: Integração com OpenAI, Gemini e Agno
-- 📄 **Processamento de Documentos**: OCR, PDF e planilhas
-- 💰 **Orçamentação Automática**: Geração baseada em documentos
-- 🎛️ **Admin Dashboard**: Interface completa de gerenciamento
-- 🔧 **Widget Embarcável**: Chat customizável para sites
+- 🏢 **Arquitetura Multi-Tenant**: Suporte robusto para múltiplos clientes com dados isolados e seguros no Firebase Firestore.
+- 🤖 **Agentes de IA Integrados**: Conexão nativa com múltiplos provedores de LLM, incluindo **OpenAI**, **Gemini**, e **Agno**.
+- 📄 **Processamento Inteligente de Documentos**: Extração de dados de arquivos PDF, imagens (OCR) e planilhas para análise e uso pelo sistema.
+- 💰 **Geração Automatizada de Orçamentos**: Criação de orçamentos dinâmicos com base nos dados extraídos dos documentos processados.
+- 🎛️ **Dashboard Administrativo**: Uma interface de gerenciamento completa, construída com Next.js e Tailwind CSS, para total controle sobre clientes, agentes, documentos e configurações.
+- 💬 **Widget de Chat Embarcável (FAB)**: Um widget flutuante e customizável que pode ser facilmente integrado a qualquer site para interação direta com os agentes de IA.
+- ⚙️ **API Centralizada**: Um backend robusto em Node.js (Express) que gerencia toda a lógica de negócios, autenticação e comunicação com os serviços.
 
-## 🏗️ Arquitetura
+## 🏗️ Arquitetura do Monorepo (Turborepo)
+
+O projeto utiliza um monorepo gerenciado com Turborepo para otimizar o desenvolvimento e o compartilhamento de código entre as aplicações.
 
 ```
 bubblechat/
 ├── apps/
-│   ├── admin-dashboard/    # Dashboard administrativo (Next.js)
-│   ├── widget-fab/         # Widget de chat (Next.js)
-│   └── api/               # API backend (Node.js/Express)
+│   ├── admin-dashboard/  # Dashboard (Next.js, Tailwind CSS, ShadCN/UI)
+│   ├── api/              # API Central (Node.js, Express, Prisma)
+│   └── widget-fab/       # Widget de Chat (Next.js, Tailwind CSS)
+│
 ├── packages/
-│   ├── ui/                # Componentes compartilhados
-│   ├── database/          # Prisma schema e cliente
-│   ├── document-processing/ # Processamento de documentos
-│   └── llm-integrations/  # Integrações com LLMs
+│   ├── database/           # Configurações do Prisma e schema do banco
+│   ├── document-processing/ # Lógica de processamento de documentos (OCR, PDF)
+│   ├── llm-integrations/   # Módulo para integração com LLMs (OpenAI, Gemini)
+│   └── ui/                 # Componentes React compartilhados
+│
+└── firebase.json         # Configuração dos serviços Firebase (Firestore, Functions)
 ```
 
-## 🚀 Início Rápido
+## 🛠️ Tecnologias Utilizadas
+
+- **Monorepo:** Turborepo
+- **Frontend:** Next.js, React, Tailwind CSS
+- **Backend:** Node.js, Express.js
+- **Banco de Dados:** Firebase Firestore (NoSQL)
+- **Comunicação em Tempo Real:** Socket.IO
+- **ORM:** Prisma (para uma camada de acesso a dados estruturada)
+- **Autenticação:** Firebase Authentication
+- **Hospedagem:** Vercel (ideal para Next.js) e Firebase Hosting
+
+## 🚀 Como Executar o Projeto
 
 ### Pré-requisitos
-- Node.js 18+
-- npm 8+
-- Docker (opcional, mas recomendado)
+- Node.js (v18 ou superior)
+- `npm` ou `pnpm` como gerenciador de pacotes
+- Uma conta no Firebase com um projeto configurado
 
-### Instalação Automática
+### 1. Configuração do Ambiente
+
+1.  **Clone o repositório:**
+    ```bash
+    git clone <URL_DO_SEU_REPOSITORIO>
+    cd bubblechat
+    ```
+
+2.  **Instale as dependências:**
+    A partir da raiz do projeto, execute:
+    ```bash
+    npm install
+    ```
+    *(ou `pnpm install` se preferir)*
+
+3.  **Configure as Variáveis de Ambiente:**
+    Crie um arquivo `.env` na raiz do diretório `apps/api` e adicione as credenciais do seu projeto Firebase e outras chaves de API:
+    ```env
+    # Firebase Admin SDK - Crie uma chave de serviço no console do Firebase
+    FIREBASE_PROJECT_ID="seu-project-id"
+    FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----
+...
+-----END PRIVATE KEY-----
+"
+    FIREBASE_CLIENT_EMAIL="firebase-adminsdk-...@seu-project-id.iam.gserviceaccount.com"
+
+    # Chaves de API para os LLMs
+    OPENAI_API_KEY="sk-..."
+    GEMINI_API_KEY="..."
+
+    # Outras configurações
+    API_PORT=3001
+    ```
+
+### 2. Executando a Aplicação
+
+Com as dependências instaladas e o ambiente configurado, inicie todos os serviços simultaneamente a partir da raiz do projeto:
+
 ```bash
-# Clone o repositório
-git clone <repository-url>
-cd bubblechat
-
-# Execute o setup automático
-npm run setup
-```
-
-### Instalação Manual
-```bash
-# 1. Instalar dependências
-npm install
-
-# 2. Configurar ambiente
-cp .env.example .env
-# Edite o .env com suas configurações
-
-# 3. Iniciar banco de dados (Docker)
-npm run docker:up
-
-# 4. Executar migrações
-npm run db:migrate
-
-# 5. Iniciar desenvolvimento
 npm run dev
 ```
+*(ou `turbo dev`)*
 
-## 🌐 Acessos
+Isso irá iniciar o `admin-dashboard`, a `api` e o `widget-fab` em modo de desenvolvimento.
 
-- **Admin Dashboard**: http://localhost:3001
-- **Widget**: http://localhost:3000
-- **API**: http://localhost:3002
+## ✅ Próximos Passos
 
-## 📋 Comandos Disponíveis
-
-### Desenvolvimento
-```bash
-npm run dev          # Iniciar todos os apps em desenvolvimento
-npm run build        # Build de produção
-npm run start        # Iniciar em produção
-npm run lint         # Linting
-npm run type-check   # Verificação de tipos
-```
-
-### Banco de Dados
-```bash
-npm run db:migrate   # Executar migrações
-npm run db:generate  # Gerar cliente Prisma
-npm run db:studio    # Abrir Prisma Studio
-npm run db:reset     # Resetar banco (cuidado!)
-```
-
-### Docker
-```bash
-npm run docker:up    # Iniciar serviços
-npm run docker:down  # Parar serviços
-npm run docker:build # Rebuild containers
-```
-
-## 🔧 Configuração
-
-### Variáveis de Ambiente
-
-Copie `.env.example` para `.env` e configure:
-
-```env
-# Database
-DATABASE_URL="postgresql://user:pass@localhost:5432/bubblechat"
-
-# LLM APIs
-OPENAI_API_KEY="sk-your-key"
-GEMINI_API_KEY="your-key"
-AGNO_API_KEY="your-key"
-
-# Document Processing
-MAX_FILE_SIZE="50MB"
-OCR_LANGUAGE="por"
-```
-
-### Processamento de Documentos
-
-O sistema suporta:
-- **Imagens**: JPG, PNG, TIFF, BMP (OCR com Tesseract.js)
-- **PDFs**: Extração de texto + OCR para escaneados
-- **Planilhas**: Excel (.xlsx, .xls) e CSV
-
-### Integrações LLM
-
-Suporte nativo para:
-- **OpenAI GPT-4**: Geração de orçamentos
-- **Google Gemini**: Alternativa ao GPT
-- **Agno**: Provider brasileiro
-
-## 📊 Fluxo de Orçamentação
-
-1. **Upload** → Documento enviado via interface
-2. **Processamento** → OCR/PDF/Planilha extrai texto
-3. **Pré-processamento** → Limpeza e formatação
-4. **LLM** → Geração de orçamento baseado no texto
-5. **Resultado** → Orçamento estruturado e formatado
-
-## 🏢 Multi-tenancy
-
-- Isolamento completo de dados por cliente
-- Configurações independentes por tenant
-- Agentes IA personalizados por cliente
-- Templates de orçamento customizáveis
-
-## 🔒 Segurança
-
-- Autenticação JWT com refresh tokens
-- Validação rigorosa de uploads
-- Sanitização de dados
-- Rate limiting
-- CORS configurável
-
-## 📈 Performance
-
-- Processamento assíncrono de documentos
-- Cache Redis para sessões
-- Otimização de imagens para OCR
-- Pool de workers para CPU intensivo
-
-## 🐳 Docker
-
-Ambiente completo com:
-- PostgreSQL 15
-- Redis 7
-- Apps Next.js/Node.js
-- Volumes persistentes
-
-```bash
-docker-compose up -d
-```
-
-## 🧪 Testes
-
-```bash
-# Testes unitários
-npm test
-
-# Testes de integração
-npm run test:integration
-
-# Coverage
-npm run test:coverage
-```
-
-## 📚 Documentação
-
-- [Implementação Completa](IMPLEMENTATION.md)
-- [Especificações](/.kiro/specs/)
-- [API Documentation](docs/api.md)
-- [Widget Integration](docs/widget.md)
-
-## 🤝 Contribuição
-
-1. Fork o projeto
-2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -am 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Abra um Pull Request
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para detalhes.
-
-## 🆘 Suporte
-
-- 📧 Email: suporte@bubblechat.com
-- 💬 Discord: [Link do servidor]
-- 📖 Docs: [Link da documentação]
-- 🐛 Issues: [GitHub Issues]
-
----
-
-**Desenvolvido com ❤️ para automatizar orçamentação através de IA**
+1.  **Finalizar a Migração para Firebase Auth**: Implementar o fluxo completo de login, registro e proteção de rotas no Dashboard usando Firebase Authentication.
+2.  **Testes Unitários e de Integração**: Adicionar uma suíte de testes com Jest/Vitest e React Testing Library para garantir a qualidade e estabilidade dos componentes e da API.
+3.  **CI/CD com GitHub Actions**: Criar um workflow para automatizar a execução de testes, linting e o deploy das aplicações para a Vercel e Firebase.
+4.  **Otimização de Consultas Firestore**: Refinar as regras de segurança do Firestore e otimizar as consultas para garantir performance e escalabilidade.
+5.  **Documentação da API**: Gerar documentação automática para os endpoints da API utilizando ferramentas como Swagger ou OpenAPI.
