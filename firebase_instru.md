@@ -66,3 +66,55 @@ npm run dev -- --filter=admin-dashboard
 
 
 Agora sim, ao acessar http://localhost:3001, você verá sua aplicação rodando localmente
+
+
+### 3 - Ambiente
+
+Aqui estão os comandos que você pode usar para iniciar cada parte:
+
+-- Para iniciar a API (Backend):
+cd apps/api && npm run dev
+
+
+
+-- Para iniciar o Admin Dashboard (Frontend):
+cd apps/admin-dashboard && npm run dev
+
+
+
+-- Para iniciar o Widget FAB (Frontend do Widget):
+cd apps/widget-fab && npm run dev
+
+
+
+### Recomendação para Execução Simultânea:
+
+Para o desenvolvimento, onde você precisará rodar todos os serviços simultaneamente, eu recomendo as seguintes abordagens, já que o concurrently diretamente no package.json se mostrou problemático neste ambiente:
+
+Múltiplos Terminais: A forma mais simples é abrir três terminais separados e executar cada um dos comandos acima em um terminal diferente.
+
+Script Shell (Recomendado para Automação): Você pode criar um script shell (.sh) na raiz do seu projeto para iniciar todos eles de uma vez. Por exemplo, você pode criar um arquivo chamado start-dev.sh com o seguinte conteúdo:
+
+<#!/bin/bash>
+
+echo "Iniciando a API..."
+(cd apps/api && npm run dev) &
+
+echo "Iniciando o Admin Dashboard..."
+(cd apps/admin-dashboard && npm run dev) &
+
+echo "Iniciando o Widget FAB..."
+(cd apps/widget-fab && npm run dev) &
+
+echo "Todos os serviços estão sendo iniciados em segundo plano."
+echo "Para parar, você pode precisar matar os processos npm ou node."
+wait
+
+### Para criar e tornar este script executável:
+
+chmod +x start-dev.sh
+
+-- Depois, você pode executar o script com:
+```bash
+./start-dev.sh
+```
