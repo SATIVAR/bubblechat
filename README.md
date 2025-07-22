@@ -70,10 +70,7 @@ bubblechat/
     ```env
     # Firebase Admin SDK - Crie uma chave de serviço no console do Firebase
     FIREBASE_PROJECT_ID="seu-project-id"
-    FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----
-...
------END PRIVATE KEY-----
-"
+    FIREBASE_PRIVATE_KEY="..."
     FIREBASE_CLIENT_EMAIL="firebase-adminsdk-...@seu-project-id.iam.gserviceaccount.com"
 
     # Chaves de API para os LLMs
